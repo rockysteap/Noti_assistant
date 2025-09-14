@@ -41,4 +41,4 @@ USER appuser
 EXPOSE 8000
 
 # Default command
-CMD ["gunicorn", "noti.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "3", "--worker-class", "uvicorn.workers.UvicornWorker"]
+CMD ["gunicorn", "noti.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "3", "--worker-class", "gunicorn.workers.sync.SyncWorker"]
