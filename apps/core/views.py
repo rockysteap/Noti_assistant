@@ -5,7 +5,6 @@ Core app views.
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from django.contrib.auth.models import User
 from django.core.cache import cache
 from django.db import connection
 from .serializers import UserSerializer
@@ -15,6 +14,7 @@ class UserViewSet(viewsets.ModelViewSet):
     """
     ViewSet for managing users.
     """
+    from django.contrib.auth.models import User
     queryset = User.objects.all()
     serializer_class = UserSerializer
 

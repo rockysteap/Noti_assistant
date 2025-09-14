@@ -30,7 +30,6 @@ DJANGO_APPS = [
 THIRD_PARTY_APPS = [
     'rest_framework',
     'corsheaders',
-    'django_extensions',
 ]
 
 LOCAL_APPS = [

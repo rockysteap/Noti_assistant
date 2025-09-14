@@ -19,19 +19,12 @@ RUN apt-get update \
         curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Poetry
-RUN pip install poetry
-
-# Configure Poetry
-ENV POETRY_NO_INTERACTION=1 \
-    POETRY_VENV_IN_PROJECT=1 \
-    POETRY_CACHE_DIR=/tmp/poetry_cache
-
-# Copy Poetry files
-COPY pyproject.toml poetry.lock* ./
-
-# Install Python dependencies
-RUN poetry install --no-dev && rm -rf $POETRY_CACHE_DIR
+# Install Python dependencies directly
+RUN pip install django==4.2.7 djangorestframework==3.14.0 django-cors-headers==4.3.1 \
+    django-redis==5.4.0 celery==5.3.4 redis==5.0.1 psycopg2-binary==2.9.7 \
+    gunicorn==21.2.0 uvicorn==0.24.0 python-telegram-bot==20.7 \
+    python-decouple==3.8 django-environ==0.11.2 whitenoise==6.6.0 \
+    flower==2.0.1 django-extensions==3.2.3 pillow==10.1.0
 
 # Copy project
 COPY . .
