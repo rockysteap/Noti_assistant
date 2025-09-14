@@ -1,0 +1,71 @@
+[tool.poetry]
+name = "noti"
+version = "0.1.0"
+description = "Django + Telegram Bot Assistant"
+readme = "README.md"
+packages = [{include = "noti"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+django = "^4.2.7"
+djangorestframework = "^3.14.0"
+django-cors-headers = "^4.3.1"
+django-redis = "^5.4.0"
+celery = "^5.3.4"
+redis = "^5.0.1"
+psycopg2-binary = "^2.9.7"
+gunicorn = "^21.2.0"
+uvicorn = "^0.24.0"
+python-telegram-bot = "^20.7"
+python-decouple = "^3.8"
+django-environ = "^0.11.2"
+whitenoise = "^6.6.0"
+flower = "^2.0.1"
+django-extensions = "^3.2.3"
+pillow = "^10.1.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.3"
+pytest-django = "^4.7.0"
+pytest-cov = "^4.1.0"
+black = "^23.11.0"
+flake8 = "^6.1.0"
+isort = "^5.12.0"
+pre-commit = "^3.6.0"
+factory-boy = "^3.3.0"
+faker = "^20.1.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 88
+target-version = ['py311']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+line_length = 88
+known_django = "django"
+known_first_party = "noti"
+sections = ["FUTURE", "STDLIB", "DJANGO", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "noti.settings.test"
+python_files = ["tests.py", "test_*.py", "*_tests.py"]
+addopts = "--cov=noti --cov-report=html --cov-report=term-missing"

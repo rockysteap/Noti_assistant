@@ -36,13 +36,20 @@ This file tracks all changes made to the Noti project - a Django backend API wit
 - [x] Create database initialization script
 - [x] Create comprehensive README.md
 
-### [Date: YYYY-MM-DD] - Django Project Setup
-- [ ] Initialize Django project with Poetry
-- [ ] Configure Django settings for production
-- [ ] Set up Django REST Framework
-- [ ] Configure PostgreSQL database connection
-- [ ] Set up Redis for caching and sessions
-- [ ] Create initial Django apps structure
+### [Date: 2025-01-15] - Django Project Setup
+- [x] Initialize Django project with Poetry
+- [x] Configure Django settings for production
+- [x] Set up Django REST Framework
+- [x] Configure PostgreSQL database connection
+- [x] Set up Redis for caching and sessions
+- [x] Create initial Django apps structure
+- [x] Create comprehensive settings structure (base, development, production, test)
+- [x] Set up Celery configuration
+- [x] Create core app with user management and health checks
+- [x] Create notifications app with models and API
+- [x] Create telegram bot app with webhook handling
+- [x] Set up URL routing and API endpoints
+- [x] Create management commands for bot setup
 
 ### [Date: YYYY-MM-DD] - Database Models
 - [ ] Design and implement data models

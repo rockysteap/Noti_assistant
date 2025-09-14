@@ -1,4 +1,4 @@
-# Noti - Django + Telegram Bot Notification System
+# Noti - Django + Telegram Bot Assistant
 
 A modern notification system built with Django REST Framework backend and Telegram bot frontend.
 
