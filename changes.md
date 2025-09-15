@@ -91,6 +91,28 @@ This file tracks all changes made to the Noti project - a Django backend API wit
 - Pagination for large datasets
 - Detailed API documentation
 
+### [Date: 2025-01-15] - Authentication & Authorization
+- [x] Implement authentication and authorization
+- [ ] Implement rate limiting with Redis
+- [ ] Add input validation and error handling
+
+**Authentication System Implemented:**
+- **Token Authentication**: REST API token-based authentication
+- **Session Authentication**: Django session-based authentication
+- **Custom Permissions**: Role-based access control (IsOwnerOrReadOnly, IsAdminOrOwner, etc.)
+- **User Management**: Registration, login, logout, password change
+- **Profile Management**: User profiles with timezone and language settings
+- **Audit Logging**: All authentication events are logged
+- **Security Features**: CSRF protection, proper error handling
+
+**Key Features:**
+- Comprehensive authentication endpoints (login, logout, register, change-password)
+- Custom permission classes for fine-grained access control
+- User profile management with extended fields
+- Audit logging for security monitoring
+- Token-based API authentication
+- Telegram authentication support (framework ready)
+
 ### [Date: YYYY-MM-DD] - Telegram Bot Integration
 - [ ] Set up Telegram bot with python-telegram-bot
 - [ ] Implement bot commands and handlers

@@ -10,6 +10,7 @@ from django.db import connection
 from django.contrib.auth.models import User
 from .models import UserProfile, SystemSettings, AuditLog
 from .serializers import UserSerializer, UserProfileSerializer, SystemSettingsSerializer, AuditLogSerializer
+from .permissions import IsOwnerOrReadOnly, IsAdminOrOwner, IsSystemAdmin
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -18,7 +19,7 @@ class UserViewSet(viewsets.ModelViewSet):
     """
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAdminUser]
 
     @action(detail=False, methods=['get'])
     def me(self, request):
@@ -35,7 +36,7 @@ class UserProfileViewSet(viewsets.ModelViewSet):
     """
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsAdminOrOwner]
 
     @action(detail=False, methods=['get', 'patch'])
     def me(self, request):
@@ -61,7 +62,7 @@ class SystemSettingsViewSet(viewsets.ModelViewSet):
     """
     queryset = SystemSettings.objects.all()
     serializer_class = SystemSettingsSerializer
-    permission_classes = [permissions.IsAdminUser]
+    permission_classes = [IsSystemAdmin]
 
     @action(detail=False, methods=['get'])
     def active(self, request):
@@ -79,7 +80,7 @@ class AuditLogViewSet(viewsets.ReadOnlyModelViewSet):
     """
     queryset = AuditLog.objects.all()
     serializer_class = AuditLogSerializer
-    permission_classes = [permissions.IsAdminUser]
+    permission_classes = [IsSystemAdmin]
     filterset_fields = ['action', 'resource', 'user']
     search_fields = ['action', 'resource', 'details']
     ordering_fields = ['created_at']

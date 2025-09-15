@@ -6,6 +6,7 @@ from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.contrib.auth.models import User
+from apps.core.permissions import IsNotificationOwner, CanManageNotifications, IsAdminOrOwner
 from .models import (
     Notification, NotificationTemplate, NotificationChannel, 
     NotificationDelivery, NotificationSubscription, NotificationGroup, 
@@ -25,7 +26,7 @@ class NotificationViewSet(viewsets.ModelViewSet):
     """
     queryset = Notification.objects.all()
     serializer_class = NotificationSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsNotificationOwner]
     filterset_fields = ['notification_type', 'priority', 'is_read', 'user']
     search_fields = ['title', 'message']
     ordering_fields = ['created_at', 'priority']
@@ -74,7 +75,7 @@ class NotificationTemplateViewSet(viewsets.ModelViewSet):
     """
     queryset = NotificationTemplate.objects.all()
     serializer_class = NotificationTemplateSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [CanManageNotifications]
     filterset_fields = ['notification_type', 'is_active']
     search_fields = ['name', 'title_template', 'message_template']
     ordering = ['name']
@@ -95,7 +96,7 @@ class NotificationChannelViewSet(viewsets.ModelViewSet):
     """
     queryset = NotificationChannel.objects.all()
     serializer_class = NotificationChannelSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAdminUser]
     filterset_fields = ['channel_type', 'is_active']
     search_fields = ['name']
     ordering = ['name']
@@ -128,7 +129,7 @@ class NotificationSubscriptionViewSet(viewsets.ModelViewSet):
     """
     queryset = NotificationSubscription.objects.all()
     serializer_class = NotificationSubscriptionSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsAdminOrOwner]
     filterset_fields = ['is_enabled', 'channel', 'user']
     ordering = ['user', 'channel']
 
@@ -156,7 +157,7 @@ class NotificationGroupViewSet(viewsets.ModelViewSet):
     """
     queryset = NotificationGroup.objects.all()
     serializer_class = NotificationGroupSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [CanManageNotifications]
     filterset_fields = ['is_active']
     search_fields = ['name', 'description']
     ordering = ['name']
@@ -168,7 +169,7 @@ class NotificationScheduleViewSet(viewsets.ModelViewSet):
     """
     queryset = NotificationSchedule.objects.all()
     serializer_class = NotificationScheduleSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [CanManageNotifications]
     filterset_fields = ['schedule_type', 'is_active']
     search_fields = ['name']
     ordering = ['name']
