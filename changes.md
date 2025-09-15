@@ -71,12 +71,25 @@ This file tracks all changes made to the Noti project - a Django backend API wit
 - Performance-optimized database indexes
 - Comprehensive model relationships
 
-### [Date: YYYY-MM-DD] - API Development
-- [ ] Create REST API endpoints
+### [Date: 2025-01-15] - API Development
+- [x] Create REST API endpoints
+- [x] Add API documentation
 - [ ] Implement authentication and authorization
-- [ ] Add API documentation
 - [ ] Implement rate limiting with Redis
 - [ ] Add input validation and error handling
+
+**API Endpoints Implemented:**
+- **Core App**: Users, User Profiles, System Settings, Audit Logs
+- **Telegram Bot App**: Telegram Users, Conversations, Commands, Messages, Webhooks, Analytics
+- **Notifications App**: Notifications, Templates, Channels, Deliveries, Subscriptions, Groups, Schedules
+
+**Key Features:**
+- Comprehensive REST API with ViewSets for all models
+- Custom actions for common operations (mark_read, unread, active, etc.)
+- Proper permission classes and authentication
+- Filtering, searching, and ordering support
+- Pagination for large datasets
+- Detailed API documentation
 
 ### [Date: YYYY-MM-DD] - Telegram Bot Integration
 - [ ] Set up Telegram bot with python-telegram-bot

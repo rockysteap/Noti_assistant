@@ -2,21 +2,23 @@
 Core app views.
 """
 
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status, permissions
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.core.cache import cache
 from django.db import connection
-from .serializers import UserSerializer
+from django.contrib.auth.models import User
+from .models import UserProfile, SystemSettings, AuditLog
+from .serializers import UserSerializer, UserProfileSerializer, SystemSettingsSerializer, AuditLogSerializer
 
 
 class UserViewSet(viewsets.ModelViewSet):
     """
     ViewSet for managing users.
     """
-    from django.contrib.auth.models import User
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
     @action(detail=False, methods=['get'])
     def me(self, request):
@@ -25,6 +27,63 @@ class UserViewSet(viewsets.ModelViewSet):
         """
         serializer = self.get_serializer(request.user)
         return Response(serializer.data)
+
+
+class UserProfileViewSet(viewsets.ModelViewSet):
+    """
+    ViewSet for managing user profiles.
+    """
+    queryset = UserProfile.objects.all()
+    serializer_class = UserProfileSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    @action(detail=False, methods=['get', 'patch'])
+    def me(self, request):
+        """
+        Get or update current user's profile.
+        """
+        profile, created = UserProfile.objects.get_or_create(user=request.user)
+        
+        if request.method == 'PATCH':
+            serializer = self.get_serializer(profile, data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+        serializer = self.get_serializer(profile)
+        return Response(serializer.data)
+
+
+class SystemSettingsViewSet(viewsets.ModelViewSet):
+    """
+    ViewSet for managing system settings.
+    """
+    queryset = SystemSettings.objects.all()
+    serializer_class = SystemSettingsSerializer
+    permission_classes = [permissions.IsAdminUser]
+
+    @action(detail=False, methods=['get'])
+    def active(self, request):
+        """
+        Get all active system settings.
+        """
+        settings = SystemSettings.objects.filter(is_active=True)
+        serializer = self.get_serializer(settings, many=True)
+        return Response(serializer.data)
+
+
+class AuditLogViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    ViewSet for viewing audit logs.
+    """
+    queryset = AuditLog.objects.all()
+    serializer_class = AuditLogSerializer
+    permission_classes = [permissions.IsAdminUser]
+    filterset_fields = ['action', 'resource', 'user']
+    search_fields = ['action', 'resource', 'details']
+    ordering_fields = ['created_at']
+    ordering = ['-created_at']
 
 
 def health_check(request):

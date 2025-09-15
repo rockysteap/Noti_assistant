@@ -8,6 +8,9 @@ from . import views
 
 router = DefaultRouter()
 router.register(r'users', views.UserViewSet)
+router.register(r'profiles', views.UserProfileViewSet)
+router.register(r'settings', views.SystemSettingsViewSet)
+router.register(r'audit-logs', views.AuditLogViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
