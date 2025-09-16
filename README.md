@@ -30,8 +30,8 @@ A modern notification system built with Django REST Framework backend and Telegr
 
 2. **Environment Configuration**
    ```bash
-   cp env.example .env
-   # Edit .env with your actual values
+   # Create .env file with your configuration
+   # See the Environment Variables section below for required variables
    ```
 
 3. **Start the services**
@@ -61,7 +61,7 @@ Noti/
 │   └── conf.d/
 │       └── default.conf
 ├── changes.md                  # Project change tracking
-├── env.example                 # Environment variables template
+├── .env                        # Environment variables (create from template)
 ├── init.sql                    # Database initialization
 └── README.md                   # This file
 ```
@@ -134,13 +134,35 @@ docker-compose exec web python manage.py createsuperuser
 
 ## 🔐 Environment Variables
 
-Copy `env.example` to `.env` and configure:
+Create a `.env` file with the following variables:
 
-- **Database**: PostgreSQL connection settings
-- **Redis**: Cache and session storage
-- **Telegram**: Bot token and webhook URL
-- **Email**: SMTP settings for notifications
-- **Security**: CORS and CSRF settings
+```bash
+# Django Settings
+SECRET_KEY=your-secret-key-here
+DEBUG=True
+ALLOWED_HOSTS=localhost,127.0.0.1
+
+# Database
+DB_PASSWORD=your_db_password
+DATABASE_URL=postgresql://noti_user:your_db_password@db:5432/noti_db
+
+# Redis
+REDIS_PASSWORD=your_redis_password
+REDIS_URL=redis://:your_redis_password@redis:6379/0
+
+# Telegram Bot
+TELEGRAM_BOT_TOKEN=your_telegram_bot_token_here
+TELEGRAM_WEBHOOK_SECRET=your_webhook_secret_here
+
+# Email (Optional)
+EMAIL_HOST_PASSWORD=your_email_password
+```
+
+**Required Variables:**
+- `SECRET_KEY`: Django secret key
+- `DB_PASSWORD`: PostgreSQL database password
+- `REDIS_PASSWORD`: Redis password
+- `TELEGRAM_BOT_TOKEN`: Your Telegram bot token from @BotFather
 
 ## 📊 Monitoring
 
