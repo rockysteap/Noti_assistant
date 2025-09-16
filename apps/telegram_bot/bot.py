@@ -1,15 +1,19 @@
 """
-Telegram bot implementation for the Noti project.
+Main Telegram bot implementation for the Noti project with Django integration.
+This is the full-featured bot with database integration, analytics, and advanced features.
 """
 
 import asyncio
 import logging
 from datetime import datetime, timezone
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from telegram.ext import Application
 
 from django.conf import settings
 from django.contrib.auth.models import User
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, BotCommand
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, BotCommand, Bot
 from telegram.ext import (
     Application, CommandHandler, MessageHandler, CallbackQueryHandler,
     filters, ContextTypes, ConversationHandler
@@ -32,12 +36,12 @@ logger = logging.getLogger(__name__)
 
 class NotiBot:
     """
-    Main Telegram bot class for the Noti project.
+    Main Telegram bot class for the Noti project with full Django integration.
     """
     
     def __init__(self):
-        self.application = None
-        self.bot = None
+        self.application: Optional['Application'] = None
+        self.bot: Optional[Bot] = None
         self.setup_bot()
     
     def setup_bot(self):
@@ -48,6 +52,7 @@ class NotiBot:
         
         try:
             self.application = Application.builder().token(settings.TELEGRAM_BOT_TOKEN).build()
+            assert self.application is not None  # Help linter understand this is not None
             self.bot = self.application.bot
             self._setup_handlers()
             logger.info("Telegram bot setup completed successfully")
@@ -57,6 +62,9 @@ class NotiBot:
     
     def _setup_handlers(self):
         """Setup all bot handlers."""
+        if self.application is None:
+            raise TelegramBotError("Application not initialized")
+        
         # Command handlers
         self.application.add_handler(CommandHandler("start", self.start_command))
         self.application.add_handler(CommandHandler("help", self.help_command))
