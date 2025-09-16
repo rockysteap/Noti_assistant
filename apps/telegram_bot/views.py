@@ -9,6 +9,7 @@ from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from apps.core.permissions import IsTelegramBotOwner, IsAdminOrOwner
+from apps.core.rate_limiting import TelegramWebhookThrottle, APIEndpointThrottle
 import json
 from .bot import handle_telegram_update
 from .models import (
@@ -28,6 +29,7 @@ class TelegramUserViewSet(viewsets.ModelViewSet):
     queryset = TelegramUser.objects.all()
     serializer_class = TelegramUserSerializer
     permission_classes = [IsAdminOrOwner]
+    throttle_classes = [APIEndpointThrottle]
     filterset_fields = ['is_verified', 'is_premium', 'is_bot']
     search_fields = ['username', 'first_name', 'last_name']
     ordering_fields = ['created_at', 'updated_at']
@@ -103,6 +105,31 @@ class BotAnalyticsViewSet(viewsets.ReadOnlyModelViewSet):
     ordering = ['-date']
 
 
+def verify_telegram_secret(secret_token):
+    """
+    Verify Telegram webhook secret token.
+    """
+    from django.conf import settings
+    expected_token = getattr(settings, 'TELEGRAM_WEBHOOK_SECRET', '')
+    return secret_token == expected_token
+
+
+def is_rate_limited(ip_address):
+    """
+    Check if IP address is rate limited.
+    """
+    from apps.core.rate_limiting import TelegramWebhookThrottle
+    throttle = TelegramWebhookThrottle()
+    # Create a mock request object for rate limiting
+    class MockRequest:
+        def __init__(self, ip):
+            self.META = {'REMOTE_ADDR': ip}
+            self.user = None
+    
+    mock_request = MockRequest(ip_address)
+    return not throttle.allow_request(mock_request, None)
+
+
 @csrf_exempt
 @require_POST
 def telegram_webhook(request):
@@ -114,7 +141,7 @@ def telegram_webhook(request):
     if not verify_telegram_secret(secret_token):
         return JsonResponse({'error': 'Unauthorized'}, status=401)
     
-    # 2. Rate limiting (optional)
+    # 2. Rate limiting
     if is_rate_limited(request.META.get('REMOTE_ADDR')):
         return JsonResponse({'error': 'Rate limited'}, status=429)
     

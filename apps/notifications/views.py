@@ -7,6 +7,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.contrib.auth.models import User
 from apps.core.permissions import IsNotificationOwner, CanManageNotifications, IsAdminOrOwner
+from apps.core.rate_limiting import NotificationThrottle, APIEndpointThrottle
 from .models import (
     Notification, NotificationTemplate, NotificationChannel, 
     NotificationDelivery, NotificationSubscription, NotificationGroup, 
@@ -27,6 +28,7 @@ class NotificationViewSet(viewsets.ModelViewSet):
     queryset = Notification.objects.all()
     serializer_class = NotificationSerializer
     permission_classes = [IsNotificationOwner]
+    throttle_classes = [NotificationThrottle]
     filterset_fields = ['notification_type', 'priority', 'is_read', 'user']
     search_fields = ['title', 'message']
     ordering_fields = ['created_at', 'priority']

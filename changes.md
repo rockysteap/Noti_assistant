@@ -74,8 +74,8 @@ This file tracks all changes made to the Noti project - a Django backend API wit
 ### [Date: 2025-01-15] - API Development
 - [x] Create REST API endpoints
 - [x] Add API documentation
-- [ ] Implement authentication and authorization
-- [ ] Implement rate limiting with Redis
+- [x] Implement authentication and authorization
+- [x] Implement rate limiting with Redis
 - [ ] Add input validation and error handling
 
 **API Endpoints Implemented:**
@@ -93,7 +93,7 @@ This file tracks all changes made to the Noti project - a Django backend API wit
 
 ### [Date: 2025-01-15] - Authentication & Authorization
 - [x] Implement authentication and authorization
-- [ ] Implement rate limiting with Redis
+- [x] Implement rate limiting with Redis
 - [ ] Add input validation and error handling
 
 **Authentication System Implemented:**
@@ -112,6 +112,16 @@ This file tracks all changes made to the Noti project - a Django backend API wit
 - Audit logging for security monitoring
 - Token-based API authentication
 - Telegram authentication support (framework ready)
+
+**Rate Limiting System Implemented:**
+- **Redis-based Rate Limiting**: Sliding window algorithm using Redis for distributed rate limiting
+- **Multiple Throttle Classes**: UserRateThrottle, AnonRateThrottle, NotificationThrottle, TelegramWebhookThrottle
+- **Configurable Limits**: Environment-based rate limit configuration
+- **Rate Limit Headers**: X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset headers
+- **Management Commands**: Rate limit management and testing commands
+- **Middleware Integration**: Automatic rate limit header injection and error handling
+- **Per-Endpoint Limiting**: Specialized rate limiting for different API endpoints
+- **Webhook Protection**: Rate limiting for Telegram webhook endpoints
 
 ### [Date: YYYY-MM-DD] - Telegram Bot Integration
 - [ ] Set up Telegram bot with python-telegram-bot

@@ -51,6 +51,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'apps.core.middleware.RateLimitHeadersMiddleware',
+    'apps.core.middleware.RateLimitExceededMiddleware',
 ]
 
 ROOT_URLCONF = 'noti.urls'
@@ -136,8 +138,8 @@ REST_FRAMEWORK = {
         'rest_framework.renderers.JSONRenderer',
     ],
     'DEFAULT_THROTTLE_CLASSES': [
-        'rest_framework.throttling.AnonRateThrottle',
-        'rest_framework.throttling.UserRateThrottle'
+        'apps.core.rate_limiting.AnonRateThrottle',
+        'apps.core.rate_limiting.UserRateThrottle'
     ],
     'DEFAULT_THROTTLE_RATES': {
         'anon': '100/hour',
@@ -194,9 +196,16 @@ CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = TIME_ZONE
 
+# Rate limiting configuration
+USER_RATE_LIMIT = config('USER_RATE_LIMIT', default='1000/hour')
+ANON_RATE_LIMIT = config('ANON_RATE_LIMIT', default='100/hour')
+NOTIFICATION_RATE_LIMIT = config('NOTIFICATION_RATE_LIMIT', default='50/hour')
+TELEGRAM_WEBHOOK_RATE_LIMIT = config('TELEGRAM_WEBHOOK_RATE_LIMIT', default='1000/hour')
+
 # Telegram Bot configuration
 TELEGRAM_BOT_TOKEN = config('TELEGRAM_BOT_TOKEN', default='')
 TELEGRAM_WEBHOOK_URL = config('TELEGRAM_WEBHOOK_URL', default='')
+TELEGRAM_WEBHOOK_SECRET = config('TELEGRAM_WEBHOOK_SECRET', default='')
 
 # Email configuration
 EMAIL_BACKEND = config('EMAIL_BACKEND', default='django.core.mail.backends.console.EmailBackend')
