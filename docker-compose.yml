@@ -40,7 +40,7 @@ services:
     environment:
       - POSTGRES_DB=noti_db
       - POSTGRES_USER=noti_user
-      - POSTGRES_PASSWORD=noti_password
+      - POSTGRES_PASSWORD=${DB_PASSWORD:-noti_password}
     networks:
       - noti_network
     healthcheck:
@@ -58,7 +58,7 @@ services:
       - "6379:6379"
     volumes:
       - redis_data:/data
-    command: redis-server --appendonly yes --requirepass noti_redis_password
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-your_redis_password}
     networks:
       - noti_network
     healthcheck:

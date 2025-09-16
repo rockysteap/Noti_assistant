@@ -9,7 +9,7 @@ services:
     environment:
       - POSTGRES_DB=noti_test_db
       - POSTGRES_USER=noti_test_user
-      - POSTGRES_PASSWORD=noti_test_password
+      - POSTGRES_PASSWORD=${DB_PASSWORD:-test_password}
     ports:
       - "5433:5432"
     volumes:
@@ -30,7 +30,7 @@ services:
       - "6380:6379"
     volumes:
       - test_redis_data:/data
-    command: redis-server --appendonly yes --requirepass noti_test_redis_password
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-test_redis_password}
     networks:
       - test_network
     healthcheck:
@@ -48,8 +48,8 @@ services:
     environment:
       - DEBUG=0
       - DJANGO_SETTINGS_MODULE=noti.settings.test
-      - DATABASE_URL=postgresql://noti_test_user:noti_test_password@test-db:5432/noti_test_db
-      - REDIS_URL=redis://:noti_test_redis_password@test-redis:6379/0
+      - DATABASE_URL=postgresql://noti_test_user:${DB_PASSWORD:-test_password}@test-db:5432/noti_test_db
+      - REDIS_URL=redis://:${REDIS_PASSWORD:-test_redis_password}@test-redis:6379/0
     env_file:
       - .env
     depends_on:
@@ -73,8 +73,8 @@ services:
     environment:
       - DEBUG=0
       - DJANGO_SETTINGS_MODULE=noti.settings.test
-      - DATABASE_URL=postgresql://noti_test_user:noti_test_password@test-db:5432/noti_test_db
-      - REDIS_URL=redis://:noti_test_redis_password@test-redis:6379/0
+      - DATABASE_URL=postgresql://noti_test_user:${DB_PASSWORD:-test_password}@test-db:5432/noti_test_db
+      - REDIS_URL=redis://:${REDIS_PASSWORD:-test_redis_password}@test-redis:6379/0
     env_file:
       - .env
     depends_on:

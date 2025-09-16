@@ -81,7 +81,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': config('DB_NAME', default='noti_db'),
         'USER': config('DB_USER', default='noti_user'),
-        'PASSWORD': config('DB_PASSWORD', default='noti_password'),
+        'PASSWORD': config('DB_PASSWORD', default='your_db_password'),
         'HOST': config('DB_HOST', default='db'),
         'PORT': config('DB_PORT', default='5432'),
     }
@@ -169,9 +169,9 @@ CSRF_TRUSTED_ORIGINS = config(
 )
 
 # Redis configuration
-REDIS_URL = config('REDIS_URL', default='redis://:noti_redis_password@redis:6379/0')
-REDIS_CACHE_URL = config('REDIS_CACHE_URL', default='redis://:noti_redis_password@redis:6379/1')
-REDIS_SESSION_URL = config('REDIS_SESSION_URL', default='redis://:noti_redis_password@redis:6379/2')
+REDIS_URL = config('REDIS_URL', default='redis://:your_redis_password@redis:6379/0')
+REDIS_CACHE_URL = config('REDIS_CACHE_URL', default='redis://:your_redis_password@redis:6379/1')
+REDIS_SESSION_URL = config('REDIS_SESSION_URL', default='redis://:your_redis_password@redis:6379/2')
 
 # Cache configuration
 CACHES = {
@@ -190,8 +190,8 @@ SESSION_CACHE_ALIAS = 'default'
 SESSION_COOKIE_AGE = 3600  # 1 hour
 
 # Celery configuration
-CELERY_BROKER_URL = config('CELERY_BROKER_URL', default='redis://:noti_redis_password@redis:6379/3')
-CELERY_RESULT_BACKEND = config('CELERY_RESULT_BACKEND', default='redis://:noti_redis_password@redis:6379/4')
+CELERY_BROKER_URL = config('CELERY_BROKER_URL', default='redis://:your_redis_password@redis:6379/3')
+CELERY_RESULT_BACKEND = config('CELERY_RESULT_BACKEND', default='redis://:your_redis_password@redis:6379/4')
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
