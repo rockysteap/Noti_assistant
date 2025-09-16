@@ -1,0 +1,24 @@
+[flake8]
+max-line-length = 88
+extend-ignore = E203, W503, E501
+exclude = 
+    .git,
+    __pycache__,
+    migrations,
+    .venv,
+    venv,
+    .env,
+    staticfiles,
+    media,
+    node_modules
+per-file-ignores =
+    # Ignore Django import errors in models
+    apps/*/models.py:F401,F811
+    # Ignore Django import errors in views
+    apps/*/views.py:F401,F811
+    # Ignore Django import errors in serializers
+    apps/*/serializers.py:F401,F811
+    # Ignore Django import errors in urls
+    apps/*/urls.py:F401,F811
+    # Ignore Django import errors in settings
+    noti/settings/*.py:F401,F811

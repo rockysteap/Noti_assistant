@@ -1,0 +1,32 @@
+{
+    "include": [
+        "apps",
+        "noti"
+    ],
+    "exclude": [
+        "**/node_modules",
+        "**/__pycache__",
+        "**/migrations",
+        "**/staticfiles",
+        "**/media"
+    ],
+    "pythonVersion": "3.11",
+    "pythonPlatform": "Linux",
+    "executionEnvironments": [
+        {
+            "root": ".",
+            "pythonVersion": "3.11",
+            "pythonPlatform": "Linux",
+            "extraPaths": [
+                "/usr/local/lib/python3.11/site-packages"
+            ]
+        }
+    ],
+    "typeCheckingMode": "basic",
+    "useLibraryCodeForTypes": true,
+    "autoImportCompletions": true,
+    "autoSearchPaths": true,
+    "stubPath": "typings",
+    "reportMissingImports": "none",
+    "reportMissingTypeStubs": "none"
+}

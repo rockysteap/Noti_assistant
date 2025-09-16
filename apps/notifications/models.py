@@ -2,6 +2,7 @@
 Notifications app models for multi-channel notification system.
 """
 
+# pylint: disable=import-error
 from django.db import models
 from django.contrib.auth.models import User
 
