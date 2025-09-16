@@ -1,0 +1,117 @@
+# Docker Compose configuration for testing
+version: '3.8'
+
+services:
+  # Test Database
+  test-db:
+    image: postgres:15-alpine
+    container_name: noti_test_db
+    environment:
+      - POSTGRES_DB=noti_test_db
+      - POSTGRES_USER=noti_test_user
+      - POSTGRES_PASSWORD=noti_test_password
+    ports:
+      - "5433:5432"
+    volumes:
+      - test_postgres_data:/var/lib/postgresql/data
+    networks:
+      - test_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U noti_test_user -d noti_test_db"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  # Test Redis
+  test-redis:
+    image: redis:7-alpine
+    container_name: noti_test_redis
+    ports:
+      - "6380:6379"
+    volumes:
+      - test_redis_data:/data
+    command: redis-server --appendonly yes --requirepass noti_test_redis_password
+    networks:
+      - test_network
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  # Test Runner
+  test-runner:
+    build: .
+    container_name: noti_test_runner
+    volumes:
+      - .:/app
+    environment:
+      - DEBUG=0
+      - DJANGO_SETTINGS_MODULE=noti.settings.test
+      - DATABASE_URL=postgresql://noti_test_user:noti_test_password@test-db:5432/noti_test_db
+      - REDIS_URL=redis://:noti_test_redis_password@test-redis:6379/0
+    env_file:
+      - .env
+    depends_on:
+      test-db:
+        condition: service_healthy
+      test-redis:
+        condition: service_healthy
+    networks:
+      - test_network
+    command: >
+      sh -c "python manage.py migrate --run-syncdb &&
+             python manage.py test --verbosity=2"
+
+  # Test Coverage Runner
+  test-coverage:
+    build: .
+    container_name: noti_test_coverage
+    volumes:
+      - .:/app
+      - test_coverage_volume:/app/htmlcov
+    environment:
+      - DEBUG=0
+      - DJANGO_SETTINGS_MODULE=noti.settings.test
+      - DATABASE_URL=postgresql://noti_test_user:noti_test_password@test-db:5432/noti_test_db
+      - REDIS_URL=redis://:noti_test_redis_password@test-redis:6379/0
+    env_file:
+      - .env
+    depends_on:
+      test-db:
+        condition: service_healthy
+      test-redis:
+        condition: service_healthy
+    networks:
+      - test_network
+    command: >
+      sh -c "pip install coverage &&
+             python manage.py migrate --run-syncdb &&
+             coverage run --source='.' manage.py test --verbosity=2 &&
+             coverage html &&
+             coverage report"
+
+  # Lint Runner
+  test-lint:
+    build: .
+    container_name: noti_test_lint
+    volumes:
+      - .:/app
+    environment:
+      - DEBUG=0
+    networks:
+      - test_network
+    command: >
+      sh -c "pip install flake8 pylint &&
+             flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics &&
+             flake8 . --count --exit-zero --max-complexity=10 --max-line-length=88 --statistics &&
+             pylint apps/ --disable=C0114,C0116"
+
+volumes:
+  test_postgres_data:
+  test_redis_data:
+  test_coverage_volume:
+
+networks:
+  test_network:
+    driver: bridge
